@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class Debug(APIView):
 
     def get(self, request):
-        logger.debug("This is debug message", extra={'a': 'GonzaloXXX'})
+        logger.debug("This is debug message", extra={'extraParam': 'Gonzalo'})
 
         return Response(data={'debug', 'hello'})
 

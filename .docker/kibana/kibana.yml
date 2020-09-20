@@ -1,2 +1,1 @@
 server.name: "Django logs example"
-server.basePath: "/kibana"

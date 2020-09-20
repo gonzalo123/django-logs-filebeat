@@ -1,0 +1,73 @@
+version: '3'
+services:
+  # Application
+  api:
+    image: elk:latest
+    command: /bin/bash ./docker-entrypoint-wsgi.sh
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - logs_volume:/src/logs
+      - static_volume:/src/staticfiles
+  nginx:
+    image: elk-nginx:latest
+    build:
+      context: .docker/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - static_volume:/src/staticfiles
+    ports:
+      - 8000:8000
+    depends_on:
+      - api
+  filebeat:
+    image: filebeat:latest
+    build:
+      context: .docker/filebeat
+      dockerfile: Dockerfile
+    volumes:
+      - logs_volume:/app/logs
+    command: filebeat -c /etc/filebeat/filebeat.yml -e -d "*" -strict.perms=false
+    depends_on:
+      - api
+  # ELK Server
+  logstash:
+    image: logstash:latest
+    restart: always
+    #ports:
+    #  - 5959:5959
+    #  - 5044:5044
+    build:
+      context: .docker/logstash
+      dockerfile: Dockerfile
+    depends_on:
+      - elasticsearch
+    volumes:
+      - logs_volume:/logs:ro
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+    restart: always
+    #ports:
+    #  - 9200:9200
+    environment:
+      - discovery.type=single-node
+      - http.host=0.0.0.0
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms750m -Xmx750m
+    volumes:
+      - elasticsearch_volume:/usr/share/elasticsearch/data
+  kibana:
+    image: kibana:latest
+    build:
+      context: .docker/kibana
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+volumes:
+  static_volume:
+  elasticsearch_volume:
+  logs_volume:

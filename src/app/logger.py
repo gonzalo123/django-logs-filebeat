@@ -7,6 +7,7 @@ class CustomisedJSONFormatter(json_log_formatter.JSONFormatter):
     def json_record(self, message: str, extra: dict, record: logging.LogRecord):
         context = extra
         django = {
+            'APP'
             'name': record.name,
             'filename': record.filename,
             'funcName': record.funcName,

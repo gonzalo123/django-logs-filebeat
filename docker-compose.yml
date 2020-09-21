@@ -7,6 +7,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      DEBUG: 'True'
     volumes:
       - logs_volume:/src/logs
       - static_volume:/src/staticfiles
@@ -31,6 +33,7 @@ services:
     command: filebeat -c /etc/filebeat/filebeat.yml -e -d "*" -strict.perms=false
     depends_on:
       - api
+
   # ELK Server
   logstash:
     image: logstash:latest
@@ -55,6 +58,10 @@ services:
       - http.host=0.0.0.0
       - xpack.security.enabled=false
       - ES_JAVA_OPTS=-Xms750m -Xmx750m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
       - elasticsearch_volume:/usr/share/elasticsearch/data
   kibana:
@@ -67,6 +74,7 @@ services:
       - 5601:5601
     depends_on:
       - elasticsearch
+      - logstash
 volumes:
   static_volume:
   elasticsearch_volume:

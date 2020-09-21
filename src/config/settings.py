@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from app.logger import CustomisedJSONFormatter
@@ -5,10 +6,9 @@ from app.logger import CustomisedJSONFormatter
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'd_6q%7kz(wv+i0o9)s_b7me*q!=jv@dz5bq0e7f^e_da_$^=mq'
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = ['*']
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -127,3 +127,4 @@ LOGGING = {
 }
 
 STATIC_ROOT = Path(BASE_DIR).resolve().joinpath('staticfiles');
+STATICFILES_DIRS = []

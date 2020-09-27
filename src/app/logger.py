@@ -2,12 +2,14 @@ import json_log_formatter
 import logging
 from django.utils.timezone import now
 
+from config import settings
+
 
 class CustomisedJSONFormatter(json_log_formatter.JSONFormatter):
     def json_record(self, message: str, extra: dict, record: logging.LogRecord):
         context = extra
         django = {
-            'APP'
+            'app': settings.APP_ID,
             'name': record.name,
             'filename': record.filename,
             'funcName': record.funcName,

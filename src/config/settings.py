@@ -92,7 +92,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
+APP_ID = 'elk_demo'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
